@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require("fs");
 
 function handleMetaStep( step ) {
   if( step.workdir ) {
@@ -22,20 +22,20 @@ function handleMetaStep( step ) {
 
 async function createDockerFile( steps, options ) {
   const run_steps = steps.map( step => {
-    if( step?.type === 'meta' ) {
+    if( step?.type === "meta" ) {
       return handleMetaStep( step );
     }
     
     return `RUN ${step}`;
   });
   const content = [
-    'from debian:stable',
-    '\n',
+    "from debian:stable",
+    "\n",
     ...run_steps
-  ].join('\n');
-  await fs.writeFileSync('Dockerfile', content);
+  ].join("\n");
+  await fs.writeFileSync("Dockerfile", content);
 }
 
 module.exports = {
   createDockerFile
-}
+};
