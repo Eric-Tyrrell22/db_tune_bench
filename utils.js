@@ -54,25 +54,15 @@ async function writeShellScript(commands, filename = "script.sh") {
     ...commands
   ].join("\n");
 
-  try {
-    await fs.writeFileSync(filename, content);
-    await fs.chmodSync(filename, 0o755); // Make the file executable
-  } catch (err) {
-    console.error("Error writing script:", err);
-    throw err;
-  }
+  await fs.writeFileSync(filename, content);
+  await fs.chmodSync(filename, 0o755); // Make the file executable
 }
 
 async function writeConfigFile( filename, params ) {
   const content = Object.entries(params).map( ([key,val]) => {
     return `${key} ${val}`;
   }).join("\n");
-  try {
-    await fs.writeFileSync(filename, content);
-  } catch (err) {
-    console.error("Error writing script:", err);
-    throw err;
-  }
+  await fs.writeFileSync(filename, content);
 }
 
 async function* handleWriteConfigFile( step ) {
