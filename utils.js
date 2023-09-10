@@ -91,7 +91,7 @@ async function* handleWriteConfigFile( step ) {
 
 function* handleBuildCommandCombos( step ) {
   const comboGenerator = generateAllCombinations( step.possible_params );  
-  for( combo of comboGenerator ) {
+  for( const combo of comboGenerator ) {
     yield constructCommand( step.command, combo );
   }
 }

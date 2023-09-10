@@ -24,7 +24,7 @@
 	ZSTD_CFLAGS
 */
 
-possible_configure_params = {
+const possible_configure_params = {
   // The default, 8 kilobytes, is suitable for most situations; but other values may be useful in special cases. The value must be a power of 2 between 1 and 32 (kilobytes).
   //'--with-blocksize': [1, 2, 4, 8, 16, 32]
   "--with-blocksize": [8, 16],

@@ -1,7 +1,3 @@
-const { stepGeneratorFactory } = require("../../utils");
-
-const config_filename = "postgresql.conf";
-
 const possible_params = {
   /*  connections & auth */
   listen_address: ["0.0.0.0"],

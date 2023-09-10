@@ -20,7 +20,7 @@ function handleMetaStep( step ) {
   return step;
 }
 
-async function createDockerFile( steps, options ) {
+async function createDockerFile( steps ) {
   const run_steps = steps.map( step => {
     if( step?.type === "meta" ) {
       return handleMetaStep( step );
