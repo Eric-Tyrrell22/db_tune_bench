@@ -1,6 +1,15 @@
 const steps = [
-  "su postgres",
-  "/usr/local/pgsql/bin/pg_ctl -D /home/postgres/data/ -l logfile start"
+  {
+    type: "meta",
+    copy: {
+      src: "run_and_bench.sh",
+      dest: "~/run_and_bench.sh"
+    }
+  },
+  {
+    type: "meta",
+    command: "~/run_and_bench.sh"
+  }
 ];
 
 module.exports = {

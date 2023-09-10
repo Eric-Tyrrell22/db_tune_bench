@@ -17,6 +17,10 @@ function handleMetaStep( step ) {
     return `ENV ${step.env}`;
   }
 
+  if( step.command ) {
+    return `CMD ${step.command}`;
+  }
+
   return step;
 }
 

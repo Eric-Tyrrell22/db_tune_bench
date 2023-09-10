@@ -71,6 +71,9 @@ const steps = [
   }
 ];
 
+steps; 
+
 module.exports = {
-  steps
+  //steps
+  steps: []
 };
