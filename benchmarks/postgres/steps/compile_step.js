@@ -67,11 +67,9 @@ const steps = [
     workdir: "/home/postgres",
   },
   {
-    type: "meta",
-    copy: {
-      src: "benchmarks/postgres/steps/run_and_bench.sh",
-      dest: "run_and_bench.sh"
-    }
+    type: "script",
+    src: "benchmarks/postgres/steps/run_and_bench.sh",
+    dest: "run_and_bench.sh"
   },
 ];
 

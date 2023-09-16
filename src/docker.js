@@ -37,6 +37,7 @@ async function createDockerFile( steps, filename ) {
     "\n",
     ...run_steps
   ].join("\n");
+
   await fs.writeFileSync(filename, content);
 }
 

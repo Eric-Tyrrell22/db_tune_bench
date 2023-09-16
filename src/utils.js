@@ -54,15 +54,17 @@ async function writeShellScript(commands, filename = "script.sh") {
     ...commands
   ].join("\n");
 
-  await fs.writeFileSync(filename, content);
-  await fs.chmodSync(filename, 0o755); // Make the file executable
+  await fs.writeFileSync(`./tmp/${filename}`, content, {
+    mode: 0o755
+  });
 }
 
 async function writeConfigFile( filename, params ) {
   const content = Object.entries(params).map( ([key,val]) => {
     return `${key} ${val}`;
   }).join("\n");
-  await fs.writeFileSync(filename, content);
+
+  await fs.writeFileSync(`./tmp/${filename}`, content);
 }
 
 async function* handleWriteConfigFile( step ) {
@@ -79,6 +81,17 @@ async function* handleWriteConfigFile( step ) {
   }
 }
 
+async function* handleScript( step ) {
+  await fs.cpSync(step.src, `./tmp/${step.dest}`);
+  yield {
+    type: "meta",
+    copy: {
+      src: step.dest,
+      dest: step.dest
+    }
+  };
+}
+
 function* handleBuildCommandCombos( step ) {
   const comboGenerator = generateAllCombinations( step.possible_params );  
   for( const combo of comboGenerator ) {
@@ -91,14 +104,21 @@ function* handleString( step ) {
 }
 
 function stepHandlerFactory( step ) {
-  console.log( step );
   switch( step.type ) {
   case "command": return handleBuildCommandCombos;
   case "file":    return handleWriteConfigFile;
+  case "script":  return handleScript;
   default:        return handleString;
   }
 }
+async function* withCount(generatorFunction) {
+  let count = 0;
+  for await (let value of generatorFunction) {
+    yield [count++, value];
+  }
+}
 
+// recursively generates all combos of steps
 async function* generateAllSteps(headGen, ...tailGens) {
   if (tailGens.length === 0) {
     for await (let h of headGen()) {
@@ -120,7 +140,7 @@ function stepGeneratorFactory(steps) {
     return stepHandlerFactory(step).bind( null, step );
   });
 
-  return generateAllSteps( ...generatorsForSteps );
+  return withCount(generateAllSteps( ...generatorsForSteps ));
 }
 
 module.exports = {
