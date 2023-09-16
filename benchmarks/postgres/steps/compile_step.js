@@ -69,7 +69,7 @@ const steps = [
   {
     type: "meta",
     copy: {
-      src: "postgres/steps/run_and_bench.sh",
+      src: "benchmarks/postgres/steps/run_and_bench.sh",
       dest: "run_and_bench.sh"
     }
   },

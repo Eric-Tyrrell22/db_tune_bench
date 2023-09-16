@@ -3,6 +3,7 @@
   "module": "index.js",
   "type": "module",
   "scripts": {
+    "start": "bun src/index.js",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint --fix . --ext .js"
   },

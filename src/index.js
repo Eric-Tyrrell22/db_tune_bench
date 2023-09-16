@@ -2,8 +2,32 @@ const { stepGeneratorFactory } = require("./utils");
 const { createDockerFile }     = require("./docker");
 const { spawnSync } = require("child_process");
 const fs = require("fs");
+const path = require("path");
+const root_dir = path.resolve(__dirname, "..");
 
-const { steps } = require("./postgres/steps");
+const bench = "postgres";
+const benchmark_path = `${root_dir}/benchmarks/${bench}`;
+const { steps } = require(`${benchmark_path}/steps`);
+
+const artifact_dir = `${benchmark_path}/artifacts`;
+const log_dir      = `${benchmark_path}/logs`;
+
+
+// Kinda lazy, but I don't want to deal with these possibly existing.
+try {
+  fs.rmdirSync(artifact_dir, {
+    recursive: true
+  });
+  fs.rmdirSync(log_dir, {
+    recursive: true
+  });
+} catch (error) {
+  console.error("unable to delete transient directories", error);
+}
+
+fs.mkdirSync(artifact_dir);
+fs.mkdirSync(log_dir);
+
 
 (async() => {
   const sg = stepGeneratorFactory(steps);
@@ -11,7 +35,14 @@ const { steps } = require("./postgres/steps");
 
   for await ( let current_steps of sg ) {
     count += 1;
-    await createDockerFile( current_steps );
+    const curr_artifact_dir = `${artifact_dir}/${count}`;
+
+    fs.mkdirSync(curr_artifact_dir, {
+      recursive: true
+    });
+    fs.writeFileSync( `${curr_artifact_dir}/steps`, JSON.stringify( current_steps, null, 2 ) );
+
+    await createDockerFile( current_steps, `${curr_artifact_dir}/Dockerfile`);
 
     spawnSync("docker", ["build", ".", `--tag=pgb:0.1.${count}`], {
       PATH: process.env.PATH,
@@ -19,19 +50,10 @@ const { steps } = require("./postgres/steps");
       env: process.env
     });
 
-    await spawnSync("docker", ["run", "-v" , "./benches:/home/postgres/benches", "-it", `pgb:0.1.${count}`], {
+    spawnSync("docker", ["run", "-v" , `${curr_artifact_dir}:/home/postgres/benches`, "-it", `pgb:0.1.${count}`], {
       PATH: process.env.PATH,
       stdio: "inherit",
       env: process.env
     });
-
-    fs.mkdirSync(`./benches/${count}`);
-    spawnSync("cp", ["benches/current_bench/*", `benches/${count}/`], {
-      shell: true
-    });
-    spawnSync("cp", ["Dockerfile", `benches/${count}/`], {
-      shell: true
-    });
-    fs.writeFileSync( `benches/${count}/steps`, JSON.stringify( steps, null, 2 ) );
   }
 })();

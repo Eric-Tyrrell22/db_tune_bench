@@ -24,7 +24,7 @@ function handleMetaStep( step ) {
   return step;
 }
 
-async function createDockerFile( steps ) {
+async function createDockerFile( steps, filename ) {
   const run_steps = steps.map( step => {
     if( step?.type === "meta" ) {
       return handleMetaStep( step );
@@ -37,7 +37,7 @@ async function createDockerFile( steps ) {
     "\n",
     ...run_steps
   ].join("\n");
-  await fs.writeFileSync("Dockerfile", content);
+  await fs.writeFileSync(filename, content);
 }
 
 module.exports = {
