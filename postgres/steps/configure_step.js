@@ -1,6 +1,6 @@
 const possible_params = {
   /*  connections & auth */
-  listen_address: ["0.0.0.0"],
+  listen_addresses: ["'*'"],
   max_connections: [ 100, 500 ],
   tcp_keepalives_idle:     [ 0 ], // 0 is OS default
   tcp_keepalives_interval: [ 0 ], // 0 is OS default
@@ -10,8 +10,8 @@ const possible_params = {
   // Gonna ignore the ssl stuff for now.
   /* Resource Consumption */
   /************* Memory *****************/
-  shared_buffer: ["128MB"],
-  huge_pages: ["on"],
+  shared_buffers: ["128MB"],
+  huge_pages: ["off"],
   huge_page_size: [0],
   temp_buffers: ["8MB"],
   //max_prepared_transactions
@@ -38,7 +38,7 @@ const possible_params = {
   bgwriter_delay: ["200ms"],
   bgwriter_lru_maxpages: [100],
   bgwriter_lru_multiplier: [2.0],
-  bgwriter_flush_after: ["512kb"], // 0 - 2 MB
+  bgwriter_flush_after: ["512kB"], // 0 - 2 MB
   /*************  Asynchronous Behavior *****************/
   backend_flush_after: [0],
   effective_io_concurrency: [1],
@@ -57,7 +57,7 @@ const possible_params = {
   wal_compression: ["off"],
   wal_buffers: [-1], // -1 is autotuned based on shared_buffer
   wal_writer_delay: ["200ms"],
-  wal_writer_flush_after: ["1mb"],
+  wal_writer_flush_after: ["1MB"],
   commit_delay: [0], // behaves differently before pg 9.3
   commit_siblings: [5],
 };
@@ -74,6 +74,5 @@ const steps = [
 steps; 
 
 module.exports = {
-  //steps
-  steps: []
+  steps
 };
