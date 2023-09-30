@@ -10,18 +10,3 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-    depends_on: 
-      - bencher 
-
-  bencher:
-    build: 
-      context: .
-      dockerfile: Dockerfile.bencher
-      args:
-        base_image: "${dut_image}"
-    container_name: bencher
-    volumes:
-      - ./benches:/home/postgres/benches
-
-volumes:
-  prom_data:
