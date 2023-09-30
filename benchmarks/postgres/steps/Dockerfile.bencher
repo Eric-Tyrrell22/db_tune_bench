@@ -1,0 +1,8 @@
+ARG base_image=debian:latest
+FROM $base_image
+
+WORKDIR bencher
+
+COPY ./bench.sh ./bench.sh
+
+CMD './bench.sh'

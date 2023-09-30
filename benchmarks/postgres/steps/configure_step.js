@@ -1,7 +1,7 @@
 const possible_params = {
   /*  connections & auth */
   listen_addresses: ["'*'"],
-  max_connections: [ 100, 500 ],
+  max_connections: [ 500 ],
   tcp_keepalives_idle:     [ 0 ], // 0 is OS default
   tcp_keepalives_interval: [ 0 ], // 0 is OS default
   tcp_keepalives_count:    [ 0 ],
@@ -57,7 +57,7 @@ const possible_params = {
   wal_compression: ["off"],
   wal_buffers: [-1], // -1 is autotuned based on shared_buffer
   wal_writer_delay: ["200ms"],
-  wal_writer_flush_after: ["1MB"],
+  //wal_writer_flush_after: ["1MB"],
   commit_delay: [0], // behaves differently before pg 9.3
   commit_siblings: [5],
 };

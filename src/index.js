@@ -12,6 +12,7 @@ const { steps } = require(`${benchmark_path}/steps`);
 
 const artifact_dir = `${benchmark_path}/artifacts`;
 const tmp_dir      = "./tmp";
+const bench_dir    = `${tmp_dir}/benches`;
 
 
 
@@ -29,6 +30,10 @@ try {
 
 fs.mkdirSync(artifact_dir);
 fs.mkdirSync(tmp_dir);
+fs.mkdirSync(bench_dir);
+fs.cpSync(`${benchmark_path}/steps`, tmp_dir, {
+  recursive: true
+});
 
 
 
@@ -53,15 +58,20 @@ fs.mkdirSync(tmp_dir);
       env: process.env
     });
 
-    spawnSync("docker", ["run", "-v" , `${tmp_dir}:/home/postgres/benches`, "-it", `pgb:0.1.${count}`], {
+    spawnSync("docker", [
+      "compose", "-f", `${tmp_dir}/docker-compose.yml`, "up",
+      "--build", "--abort-on-container-exit",
+    ], {
       PATH: process.env.PATH,
       stdio: "inherit",
-      env: process.env
+      env: { dut_image: `pgb:0.1.${count}`, ...process.env }
     });
 
     //cleanup
     fs.cpSync(tmp_dir, curr_artifact_dir, {
       recursive: true
     });
+    // let's focus on n=1 for now.
+    break;
   }
 })();

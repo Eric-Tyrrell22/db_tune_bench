@@ -30,16 +30,16 @@ const possible_configure_params = {
   "--with-blocksize": [8, 16],
   //  It is recommended, though not absolutely required, that this value be a power of 2. Note that changing this value breaks on-disk database compatibility, meaning you cannot use pg_upgrade to upgrade to a build with a different segment size.
   //'--with-segsize': [1, 2, 3, 4, 8, 16, 19, 32]
-  "--with-segsize": [1, 2, 4],
+  "--with-segsize": [4],
   //The value must be a power of 2 between 1 and 64 (kilobytes).
-  "--with-wal-blocksize": [1, 2, 4],
+  "--with-wal-blocksize": [4],
   //'--with-wal-blocksize': [1, 2, 4, 8, 16, 32, 64]
 };
 
 const steps = [
   {
     type: "meta",
-    workdir: "/home/postgres/postgresql-15.4",
+    workdir: "/home/postgres/postgresql-15.3",
   },
   { 
     type: "command",
@@ -68,8 +68,13 @@ const steps = [
   },
   {
     type: "script",
-    src: "benchmarks/postgres/steps/run_and_bench.sh",
-    dest: "run_and_bench.sh"
+    src: "benchmarks/postgres/steps/run.sh",
+    dest: "run.sh"
+  },
+  {
+    type: "script",
+    src: "benchmarks/postgres/steps/pg_hba.conf",
+    dest: "data/pg_hba.conf"
   },
 ];
 

@@ -1,4 +1,4 @@
-const VERSION = 15.4;
+const VERSION = 15.3;
 const filename = `postgresql-${VERSION}.tar.gz`;
 const url = `https://ftp.postgresql.org/pub/source/v${VERSION}/postgresql-${VERSION}.tar.gz`;
 

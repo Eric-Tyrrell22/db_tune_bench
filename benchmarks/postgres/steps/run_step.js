@@ -15,7 +15,7 @@ const steps = [
   */
   {
     type: "meta",
-    command: "~/run_and_bench.sh"
+    command: "~/run.sh"
   }
 ];
 
