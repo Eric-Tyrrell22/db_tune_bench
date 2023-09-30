@@ -23,44 +23,5 @@ services:
     volumes:
       - ./benches:/home/postgres/benches
 
-  postgres_exporter:
-    image: quay.io/prometheuscommunity/postgres-exporter
-    environment:
-      - DATA_SOURCE_URI=postgres:5432/postgres?sslmode=disable
-      - DATA_SOURCE_USER=postgres
-    depends_on:
-      - postgres
-      - bencher 
-    command: 
-      - "--disable-settings-metrics"
-
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    ports:
-      - 9090:9090
-    restart: unless-stopped
-    volumes:
-      - ./prometheus:/etc/prometheus
-      - prom_data:/prometheus
-    depends_on: 
-      - bencher 
-  
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - 3000:3000
-    restart: unless-stopped
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=grafana
-    volumes:
-      - ./grafana:/etc/grafana/provisioning/datasources
-    depends_on: 
-      - bencher 
-
 volumes:
   prom_data:
