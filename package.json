@@ -1,14 +1,12 @@
 {
   "name": "db_tuner",
   "module": "index.js",
-  "type": "module",
   "scripts": {
-    "start": "bun src/index.js",
+    "start": "node src/index.js",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint --fix . --ext .js"
   },
   "devDependencies": {
-    "bun-types": "latest",
     "eslint": "^8.49.0"
   },
   "peerDependencies": {

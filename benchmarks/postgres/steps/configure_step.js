@@ -10,7 +10,7 @@ const possible_params = {
   // Gonna ignore the ssl stuff for now.
   /* Resource Consumption */
   /************* Memory *****************/
-  shared_buffers: ["128MB"],
+  shared_buffers: ["128MB", "256MB", "512MB"],
   huge_pages: ["off"],
   huge_page_size: [0],
   temp_buffers: ["8MB"],

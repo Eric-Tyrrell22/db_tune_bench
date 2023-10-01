@@ -12,7 +12,6 @@ const { steps } = require(`${benchmark_path}/steps`);
 
 const artifact_dir = `${benchmark_path}/artifacts`;
 const tmp_dir      = "./tmp";
-const bench_dir    = `${tmp_dir}/benches`;
 
 
 
@@ -30,12 +29,9 @@ try {
 
 fs.mkdirSync(artifact_dir);
 fs.mkdirSync(tmp_dir);
-fs.mkdirSync(bench_dir);
 fs.cpSync(`${benchmark_path}/steps`, tmp_dir, {
   recursive: true
 });
-
-
 
 (async() => {
   const sg = stepGeneratorFactory(steps);
@@ -67,11 +63,18 @@ fs.cpSync(`${benchmark_path}/steps`, tmp_dir, {
       env: { dut_image: `pgb:0.1.${count}`, ...process.env }
     });
 
+    spawnSync("docker", [
+      "compose", "-f", `${tmp_dir}/docker-compose.yml`, "down",
+    ], {
+      PATH: process.env.PATH,
+      stdio: "inherit",
+      env: { dut_image: `pgb:0.1.${count}`, ...process.env }
+    });
+    console.log("hey");
+
     //cleanup
     fs.cpSync(tmp_dir, curr_artifact_dir, {
       recursive: true
     });
-    // let's focus on n=1 for now.
-    break;
   }
 })();
