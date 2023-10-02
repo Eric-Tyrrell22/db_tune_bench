@@ -1,5 +1,5 @@
 const sequelize = require("./src/db");
-const User = require("./src/models/user");
+const axios = require("axios");
 const seed = require("./src/seed");
 const benchmark = require("./src/benchmarks/find_first_user");
 
@@ -26,6 +26,7 @@ const waitForDb = async (maxRetries = 10, delayInMillis = 10_000) => {
 
 const run_benchmark = async() => {
   try {
+    console.log( process.env.benchmark_id );
     await waitForDb();
     console.log("seeding");
     await seed();
@@ -33,10 +34,23 @@ const run_benchmark = async() => {
     const results = await benchmark({
       duration: 60
     });
+
+    await axios.post("http://localhost:3000/benchmarks", {
+      benchmark_id: process.env.benchmark_id,
+      results,
+      error: null
+    });
     console.log(JSON.stringify( results, null, 2 ));
-    await sequelize.close();
   } catch (error) {
+    await axios.post("http://localhost:3000/benchmarks", {
+      benchmark_id: process.env.benchmark_id,
+      results: null,
+      error: error
+    });
     console.error("Unable to connect to the database:", error);
+  } finally {
+    await sequelize.close();
+
   }
 };
 

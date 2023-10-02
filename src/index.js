@@ -4,6 +4,7 @@ const { spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const root_dir = path.resolve(__dirname, "..");
+const BenchmarkSettings = require("./db/models/benchmarkSettings");
 
 const bench = "postgres";
 const benchmark_path = `${root_dir}/benchmarks/${bench}`;
@@ -12,7 +13,6 @@ const { steps } = require(`${benchmark_path}/steps`);
 
 const artifact_dir = `${benchmark_path}/artifacts`;
 const tmp_dir      = "./tmp";
-
 
 
 // Kinda lazy, but I don't want to deal with these possibly existing.
@@ -37,7 +37,12 @@ fs.cpSync(`${benchmark_path}/steps`, tmp_dir, {
   const sg = stepGeneratorFactory(steps);
 
   for await ( let [ count, current_steps ] of sg ) {
-
+    // TODO, refactor this to return the chosen config, and then create the steps inside of here.
+    // This way the data's better.
+    const settings = await BenchmarkSettings.create({
+      settings: current_steps
+    });
+    console.log( settings );
     const curr_artifact_dir = `${artifact_dir}/${count}`;
 
     fs.mkdirSync(curr_artifact_dir, {
@@ -60,7 +65,11 @@ fs.cpSync(`${benchmark_path}/steps`, tmp_dir, {
     ], {
       PATH: process.env.PATH,
       stdio: "inherit",
-      env: { dut_image: `pgb:0.1.${count}`, ...process.env }
+      env: {
+        dut_image: `pgb:0.1.${count}`,
+        benchmark_id: settings._id.toString(),
+        ...process.env // might be unneeded.
+      }
     });
 
     spawnSync("docker", [
@@ -68,9 +77,12 @@ fs.cpSync(`${benchmark_path}/steps`, tmp_dir, {
     ], {
       PATH: process.env.PATH,
       stdio: "inherit",
-      env: { dut_image: `pgb:0.1.${count}`, ...process.env }
+      env: {
+        dut_image: `pgb:0.1.${count}`,
+        benchmark_id: settings._id.toString(),
+        ...process.env // might be unneeded.
+      }
     });
-    console.log("hey");
 
     //cleanup
     fs.cpSync(tmp_dir, curr_artifact_dir, {

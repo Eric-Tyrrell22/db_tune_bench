@@ -111,6 +111,7 @@ function stepHandlerFactory( step ) {
   default:        return handleString;
   }
 }
+
 async function* withCount(generatorFunction) {
   let count = 0;
   for await (let value of generatorFunction) {
