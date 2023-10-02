@@ -10,12 +10,15 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+    network_mode: "host"
 
   postgres_bencher:
     build: ./bencher
     container_name: postgres_bencher
     environment:
       # how many could a postgres couldgres if a postgres could pres gost?
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
+      - DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
+      - benchmark_id=${benchmark_id}
     depends_on:
       - postgres
+    network_mode: "host"
